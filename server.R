@@ -17,22 +17,21 @@ library(dplyr)
 
 function(input, output, session) {
   #colourpalette
-  myPal  <- colorNumeric(palette = "Spectral", domain = mydata$values, na.color = "transparent")
+  myPal  <- colorNumeric(palette = "Spectral", domain = mydata$norm, na.color = "transparent")
   
   #Label on a pop-up window
-  LABELS <- paste(mydata$name, mydata$norm)
+  LABELS <- paste(mydata$LSOA11NM, mydata$norm)
   initial_lat = 55
-  initial_lng = 14.5
+  initial_lng = 0
   initial_zoom = 3
   
   output$map <- renderLeaflet({
     mydata %>%
-      st_transform(crs = 4326) %>%
       leaflet() %>%
-      addProviderTiles(providers$Esri.WorldGrayCanvas) %>%
+      addProviderTiles(providers$OpenStreetMap) %>%
       setView(lng = initial_lng, lat = initial_lat, zoom = initial_zoom) %>%
       addPolygons(weight = 1,
-                  layerId = mydata$name,
+                  layerId = mydata$LSOA11NM,
                   color = "white",
                   fillColor = ~myPal(norm),
                   fillOpacity = 0.7, 
