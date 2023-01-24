@@ -1,0 +1,3 @@
+library(mapdeck)
+
+set_token("pk.eyJ1IjoibWF0aGV3c3VzaGlsIiwiYSI6ImNsZDZrYWhjcDBncm0zcXBseWFoZHEyankifQ.gn3neKhfwQDbqntx70d8Ng")
