@@ -24,12 +24,29 @@ library(mapdeck)
 
 # Define server logic required to map inequality and allow for data download
 function(input, output, session) {
+  #colourpalette
+  myPal  <- colorNumeric(palette = "Spectral", domain = mydata$norm, na.color = "transparent")
   
+  #Label on a pop-up window
+  LABELS <- paste(mydata$LSOA11NM, mydata$norm)
+  initial_lat = 55
+  initial_lng = 0
+  initial_zoom = 3
   
-  # return lon lat, bounding box and zoom of current view
-  observeEvent({input$map_view_change},{
-    print(input$map_view_change)
-    
+  output$map <- renderLeaflet({
+    mydata %>%
+      leaflet() %>%
+      addProviderTiles(providers$OpenStreetMap) %>%
+      setView(lng = initial_lng, lat = initial_lat, zoom = initial_zoom) %>%
+      addPolygons(weight = 1,
+                  layerId = mydata$LSOA11NM,
+                  color = "white",
+                  fillColor = ~myPal(norm),
+                  fillOpacity = 0.7, 
+                  label = LABELS) %>%
+      addLegend("topright", pal = myPal, values = ~norm,
+                title = "",
+                opacity = 0.7)
   })
   
 
