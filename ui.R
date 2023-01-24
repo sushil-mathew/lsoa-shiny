@@ -8,98 +8,38 @@
 #
 
 library(shiny)
-library(RColorBrewer)
-library(scales)
-library(lattice)
-library(dplyr)
-library(sf)
-library(tidyverse)
-library(DT)
-library(plotly)
-library(shinyjs)
-library(htmlwidgets)
-library(mapdeck)
+library(leaflet)
 
 
 # Choices for drop-downs: Have it in this format, perhaps add countries
 vars <- c("Random data" = "norm")
 
-navbarPage(
-  
-  # title of app 
-  title = "LSOA", 
-  id = "home",
-  
-  
-  tabPanel("Map", 
-           value = "map",
-           div(class = "outer",
-               
-               tags$head(
-                 # Include custom CSS
-                 includeCSS("styles.css"),
-                 # includeScript("gomap.js")
-                 useShinyjs()
-                 
-                 #waiterOnBusy(),
-                 
-               ),
-               
-               # leafletOutput(
-               #     "map" 
-               #     ,width = "100%" 
-               #     ,height = "100%"
-               # ),
-               mapdeckOutput(
-                 outputId = 'map',
-                 width = "100%",
-                 height = "100%"
-               ),
-               
-               # draggable panel to select inequality measure and level
-               absolutePanel(
-                 id = "controls", 
-                 class = "panel panel-default", 
-                 fixed = TRUE,
-                 draggable = TRUE, 
-                 top = 300, 
-                 left = 50, 
-                 right = "auto", 
-                 bottom = "auto",
-                 width = 330, 
-                 height = "auto",
-                 
-                 h2("LOOT explorer"),
-                 
-                 
-                 # options: income / wealth / housing
-                 # options: 
-                 #fluidRow(
-                 #  column(6, actionButton("options", "More options")),
-                 #  column(6, downloadButton("download", "Download data"))
-                 # ),
-                 
-                 # TODO draw your own area? cf. nebular.gl (R port?)
-                 
-                 # TODO
-                 # distribution of house values in area
-                 #withSpinnter()plotlyOutput("house_values", height = 200),
-                 # plotOutput("scatterCollegeIncome", height = 250)
-               ),
-               
-               # tags$div(id = "cite",
-               #  'Data compiled for ', tags$em('Measuring local, salient inequality in the UK'), ' by Joel H Suss.'
-               # ),
-               
-           )
-  ), # end Map tab
-  
-  
-  
-  tabPanel(
-    "About", value = "about",
-    #useMarkdown()
-    
-  ) # end About panel
-  
+
+
+navbarPage("Interactive Maps", id="nav",
+           
+           tabPanel("LSOA11",
+                    div(class="outer",
+                        
+                        tags$head(
+                          # Include our custom CSS
+                          includeCSS("styles.css")
+                        ),
+                        # If not using custom CSS, set height of leafletOutput to a number instead of percent
+                        leafletOutput("map", width="100%", height="100%"),
+                        
+                        
+                        # Panel to select variable
+                        absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
+                                      draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
+                                      width = 330, height = "auto",
+                                      selectInput("variable", "Variable", vars, selected = "norm"),
+                                      actionButton(inputId = "reset", label = "Return", class = "btn-primary")
+                        ),
+                        
+                        tags$div(id="cite",
+                                 'Data compiled for ', tags$em('Index'), ' by Sushil Mathew(2022)'
+                        )
+                    )
+           ),
 )
